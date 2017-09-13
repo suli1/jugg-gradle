@@ -24,8 +24,6 @@ dependencies {
 group = 'com.paem.jugg.gradle'
 version = '1.0.1'
 
-def url = 'http://10.184.160.186:8081/nexus/content/repositories/releases/'
-
 uploadArchives {
   repositories {
     mavenDeployer {
