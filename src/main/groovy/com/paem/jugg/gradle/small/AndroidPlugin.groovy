@@ -36,8 +36,6 @@ class AndroidPlugin extends BasePlugin {
         return project.android
     }
 
-//    protected String getSmallCompileType() { return null }
-
     @Override
     protected void configureProject() {
         super.configureProject()
@@ -80,13 +78,6 @@ class AndroidPlugin extends BasePlugin {
 
     protected void afterEvaluate(boolean released) {
         println ">> AndroidPlugin.afterEvaluate, release:${released}"
-//        // Automatic add `small' dependency
-//        if (rootSmall.smallProject != null) {
-//            project.dependencies.add(smallCompileType, rootSmall.smallProject)
-//        } else {
-//            project.dependencies.add(smallCompileType, "${SMALL_AAR_PREFIX}$rootSmall.aarVersion")
-//        }
-
         def preBuild = project.tasks['preBuild']
         if (released) {
             preBuild.doFirst {

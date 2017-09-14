@@ -162,9 +162,9 @@ class AppPlugin extends BundlePlugin {
         // Collect stub and small jars in host
         Set<Project> sharedProjects = []
         sharedProjects.addAll(rootSmall.hostStubProjects)
-        if (rootSmall.smallProject != null) {
-            sharedProjects.add(rootSmall.smallProject)
-        }
+//        if (rootSmall.smallProject != null) {
+//            sharedProjects.add(rootSmall.smallProject)
+//        }
         sharedProjects.each {
             def jarTask = it.tasks.withType(TransformTask.class).find {
                 it.variantName == 'release' && it.transform.name == 'syncLibJars'

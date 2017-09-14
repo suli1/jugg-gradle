@@ -23,10 +23,6 @@ import org.gradle.api.Project
  */
 public abstract class BasePlugin implements Plugin<Project> {
 
-//    public static final String SMALL_AAR_PREFIX = "net.wequick.small:small:"
-//    public static final String SMALL_JAR_PATTERN = "net.wequick.small-small-*.jar"
-    public static final String SMALL_LIBS = 'smallLibs'
-
     protected boolean isBuildingBundle
     protected boolean isBuildingLib
 

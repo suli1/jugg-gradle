@@ -16,25 +16,26 @@ class HostPlugin extends AndroidPlugin {
         super.configureProject()
         
         project.afterEvaluate {
-            // Configure libs dir
-            def sourceSet = project.android.sourceSets.main
-            def source = rootSmall.buildToAssets ? sourceSet.assets : sourceSet.jniLibs
-            if (source.srcDirs == null) {
-                source.srcDirs = [SMALL_LIBS]
-            } else {
-                source.srcDirs += SMALL_LIBS
-            }
+//            // Configure libs dir
+//            def sourceSet = project.android.sourceSets.main
+//            def source = rootSmall.buildToAssets ? sourceSet.assets : sourceSet.jniLibs
+//            if (source.srcDirs == null) {
+//                source.srcDirs = [SMALL_LIBS]
+//            } else {
+//                source.srcDirs += SMALL_LIBS
+//            }
             // If contains release signing config, all bundles will be signed with it,
             // copy the config to debug type to ensure the signature-validating works
             // while launching application from IDE.
+            // TODO 安全考虑，插件签名与宿主签名应该分开
             def releaseSigningConfig = android.buildTypes.release.signingConfig
             if (releaseSigningConfig != null) {
                 android.buildTypes.debug.signingConfig = releaseSigningConfig
             }
 
-            // Add a build config to specify whether load-from-assets or not.
-            android.defaultConfig.buildConfigField(
-                    "boolean", "LOAD_FROM_ASSETS", rootSmall.buildToAssets ? "true" : "false")
+//            // Add a build config to specify whether load-from-assets or not.
+//            android.defaultConfig.buildConfigField(
+//                    "boolean", "LOAD_FROM_ASSETS", rootSmall.buildToAssets ? "true" : "false")
         }
     }
 
@@ -43,10 +44,6 @@ class HostPlugin extends AndroidPlugin {
         return PluginType.Host
     }
 
-//    @Override
-//    protected String getSmallCompileType() {
-//        return 'compile'
-//    }
 
     @Override
     protected void createTask() {

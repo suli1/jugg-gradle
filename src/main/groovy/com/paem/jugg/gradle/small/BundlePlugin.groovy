@@ -67,23 +67,12 @@ abstract class BundlePlugin extends AndroidPlugin {
     protected void configureReleaseVariant(BaseVariant variant) {
         super.configureReleaseVariant(variant)
 
-        // Set output file (*.so)
-//        def outputFile = getOutputFile(variant)
-//        BundleExtension ext = small
-//        ext.outputFile = outputFile
+        // Set output plugin file (*.apk)
+        def outputFile = getOutputFile(variant)
+        BundleExtension ext = small
+        ext.outputFile = outputFile
         variant.outputs.each { out ->
-            String path = out.outputFile.absolutePath
-            int indexEnd = path.lastIndexOf(File.separator)
-            int indexStart = path.substring(0, indexEnd - 1).lastIndexOf(File.separator)
-            out.outputFile = new File(path.substring(0, indexStart) + File.separator +
-                    "plugin" +
-                    File.separator +
-                    path.substring(indexEnd))
-
-            BundleExtension ext = small
-            ext.outputFile = out.outputFile
-
-            println ">> output:${out.outputFile.getAbsolutePath()}"
+            out.outputFile = outputFile
         }
     }
 

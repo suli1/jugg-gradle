@@ -16,11 +16,11 @@
 package com.paem.jugg.gradle.small
 
 import org.gradle.api.Project
-import org.gradle.util.VersionNumber
 
 public class RootExtension extends BaseExtension {
 
     private static final String FD_BUILD_SMALL = 'build-small'
+    private static final String FD_PLUGIN = 'plugin'
     private static final String FD_PRE_JAR = 'small-pre-jar'
     private static final String FD_PRE_AP = 'small-pre-ap'
     private static final String FD_PRE_IDS = 'small-pre-ids'
@@ -30,28 +30,11 @@ public class RootExtension extends BaseExtension {
     private static final String FD_JAR = 'jar'
     private static final String FD_AAR = 'aar'
 
-    /** The minimum small aar version required */
-    private static final String REQUIRED_AAR_VERSION = '1.0.0'
-    private static final VersionNumber REQUIRED_AAR_REVISION = VersionNumber.parse(REQUIRED_AAR_VERSION)
-
-    /** The built version of gradle-small plugin */
-    public static final String PLUGIN_VERSION = '1.2.0-alpha6'
-    public static final VersionNumber PLUGIN_REVISION = VersionNumber.parse(PLUGIN_VERSION)
-
-    /** 
-     * Version of aar net.wequick.small:small
-     * default to `gradle-small' plugin version 
-     */
-    String aarVersion
-
     /**
      * Host module name
      * default to `app'
      */
     String hostModuleName
-
-    /** The parsed revision of `aarVersion' */
-    private VersionNumber aarRevision
 
     /**
      * Strict mode, <tt>true</tt> if keep only resources in bundle's res directory.
@@ -72,20 +55,12 @@ public class RootExtension extends BaseExtension {
      */
     protected KotlinConfig kotlin
 
-    /**
-     * If <tt>true</tt> build plugins to host assets as *.apk,
-     * otherwise build to host smallLibs as *.so
-     */
-    boolean buildToAssets = false
 
     /** Count of libraries */
     protected int libCount
 
     /** Count of bundles */
     protected int bundleCount
-
-    /** Project of Small AAR module */
-    protected Project smallProject
 
     /** Project of host */
     protected Project hostProject
@@ -99,7 +74,7 @@ public class RootExtension extends BaseExtension {
     /** Project of app.* */
     protected Set<Project> appProjects
 
-    /** Directory to output bundles (*.so) */
+    /** Directory to output bundles (*.apk) */
     protected File outputBundleDir
 
     private File preBuildDir
@@ -129,6 +104,7 @@ public class RootExtension extends BaseExtension {
         hostModuleName = 'app'
 
         preBuildDir = new File(project.projectDir, FD_BUILD_SMALL)
+        outputBundleDir = new File(preBuildDir, FD_PLUGIN)
         def interDir = new File(preBuildDir, FD_INTERMEDIATES)
         def jarDir = new File(interDir, FD_PRE_JAR)
         preBaseJarDir = new File(jarDir, FD_BASE)
@@ -191,33 +167,6 @@ public class RootExtension extends BaseExtension {
         return preLinkAarDir
     }
 
-    public String getAarVersion() {
-        if (aarVersion == null) {
-            // Try to use the version of gradle-small plugin
-            if (PLUGIN_REVISION < VersionNumber.parse('1.1.0-alpha2')) {
-                throw new RuntimeException(
-                        'Please specify Small aar version in your root build.gradle:\n' +
-                                "small {\n    aarVersion = '[the_version]'\n}")
-            }
-
-            return PLUGIN_VERSION
-        }
-
-        if (aarRevision == null) {
-            synchronized (this.class) {
-                if (aarRevision == null) {
-                    aarRevision = VersionNumber.parse(aarVersion)
-                }
-            }
-        }
-        if (aarRevision < REQUIRED_AAR_REVISION) {
-            throw new RuntimeException(
-                    "Small aar version $REQUIRED_AAR_VERSION is required. Current version is $aarVersion"
-            )
-        }
-
-        return aarVersion
-    }
 
     Map<String, Set<String>> bundleModules = [:]
 
@@ -240,24 +189,8 @@ public class RootExtension extends BaseExtension {
     }
 
     public File getBundleOutput(String bundleId) {
-        def outputDir = outputBundleDir
-        if (buildToAssets) {
-            return new File(outputDir, "${bundleId}.apk")
-        } else {
-            def arch = System.properties['bundle.arch'] // Get from command line (-Dbundle.arch=xx)
-            if (arch == null) {
-                // Read from local.properties (bundle.arch=xx)
-                def prop = new Properties()
-                def file = project.rootProject.file('local.properties')
-                if (file.exists()) {
-                    prop.load(file.newDataInputStream())
-                    arch = prop.getProperty('bundle.arch')
-                }
-                if (arch == null) arch = 'armeabi' // Default
-            }
-            def so = "lib${bundleId.replaceAll('\\.', '_')}.so"
-            return new File(outputDir, "$arch/$so")
-        }
+        def pluginApk = "${bundleId.replaceAll('\\.', '_')}.apk"
+        return new File(outputBundleDir, "$pluginApk")
     }
 
     /** Check if is building any libs (lib.*) */
@@ -300,10 +233,10 @@ public class RootExtension extends BaseExtension {
     protected boolean isLibProject(String name) {
         boolean found = false;
         if (libProjects != null) {
-            found = libProjects.find{ it.name == name } != null;
+            found = libProjects.find { it.name == name } != null;
         }
         if (!found && hostStubProjects != null) {
-            found = hostStubProjects.find{ it.name == name } != null;
+            found = hostStubProjects.find { it.name == name } != null;
         }
         return found;
     }

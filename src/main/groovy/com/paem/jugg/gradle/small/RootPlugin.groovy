@@ -69,15 +69,10 @@ class RootPlugin extends BasePlugin {
             // Configure sub projects
             project.subprojects {
                 println "sub project ${it.name}"
-                if (it.name == 'small') {
-                    rootExt.smallProject = it
-                    return
-                }
 
                 if (it.name == rootExt.hostModuleName) {
                     // Host
                     it.apply plugin: HostPlugin
-                    rootExt.outputBundleDir = new File(it.projectDir, SMALL_LIBS)
                     rootExt.hostProject = it
                     println "Add HostPlugin to ${rootExt.hostModuleName}"
                 } else if (it.name.startsWith('app+')) {
@@ -219,57 +214,57 @@ class RootPlugin extends BasePlugin {
             println ''
             println '```'
 
-            // gradle-small
-            print String.format('%24s', 'gradle-small plugin : ')
-            def pluginVersion = small.PLUGIN_VERSION
-            def pluginProperties = project.file('buildSrc/src/main/resources/META-INF/gradle-plugins/net.wequick.small.properties')
-            if (pluginProperties.exists()) {
-                println "$pluginVersion (project)"
-            } else {
-                def config = project.buildscript.configurations['classpath']
-                def module = config.resolvedConfiguration.firstLevelModuleDependencies.find {
-                    it.moduleGroup == 'net.wequick.tools.build' && it.moduleName == 'gradle-small'
-                }
-                File pluginDir = module.moduleArtifacts.first().file.parentFile
-                if (pluginDir.name == module.moduleVersion) {
-                    // local maven:
-                    // ~/.m2/repository/net/wequick/tools/build/gradle-small/1.0.0-beta9/gradle-small-1.0.0-beta9.jar
-                    println "$module.moduleVersion (local maven)"
-                } else {
-                    // remote maven:
-                    // ~/.gradle/caches/modules-2/files-2.1/net.wequick.tools.build/gradle-small/1.0.0-beta9/8db229545a888ab25e210a9e574c0261e6a7a52d/gradle-small-1.0.0-beta9.jar
-                    println "$module.moduleVersion (maven)"
-                }
-            }
+//            // gradle-small
+//            print String.format('%24s', 'gradle-small plugin : ')
+//            def pluginVersion = small.PLUGIN_VERSION
+//            def pluginProperties = project.file('buildSrc/src/main/resources/META-INF/gradle-plugins/net.wequick.small.properties')
+//            if (pluginProperties.exists()) {
+//                println "$pluginVersion (project)"
+//            } else {
+//                def config = project.buildscript.configurations['classpath']
+//                def module = config.resolvedConfiguration.firstLevelModuleDependencies.find {
+//                    it.moduleGroup == 'net.wequick.tools.build' && it.moduleName == 'gradle-small'
+//                }
+//                File pluginDir = module.moduleArtifacts.first().file.parentFile
+//                if (pluginDir.name == module.moduleVersion) {
+//                    // local maven:
+//                    // ~/.m2/repository/net/wequick/tools/build/gradle-small/1.0.0-beta9/gradle-small-1.0.0-beta9.jar
+//                    println "$module.moduleVersion (local maven)"
+//                } else {
+//                    // remote maven:
+//                    // ~/.gradle/caches/modules-2/files-2.1/net.wequick.tools.build/gradle-small/1.0.0-beta9/8db229545a888ab25e210a9e574c0261e6a7a52d/gradle-small-1.0.0-beta9.jar
+//                    println "$module.moduleVersion (maven)"
+//                }
+//            }
 
             // small
-            print String.format('%24s', 'small aar : ')
-            if (small.smallProject != null) {
-                def prop = new Properties()
-                prop.load(small.smallProject.file('gradle.properties').newDataInputStream())
-                println "${prop.getProperty('version')} (project)"
-            } else {
-                def aarVersion
-                try {
-                    aarVersion = small.aarVersion
-                } catch (Exception e) {
-                    aarVersion = 'unspecific'
-                }
-                def module = small.hostProject.configurations.compile
-                        .resolvedConfiguration.firstLevelModuleDependencies.find {
-                    it.moduleGroup == 'net.wequick.small' && it.moduleName == 'small'
-                }
-                File pluginDir = module.moduleArtifacts.first().file.parentFile
-                if (pluginDir.name == module.moduleVersion) {
-                    // local maven:
-                    // ~/.m2/repository/net/wequick/tools/build/gradle-small/1.0.0-beta9/gradle-small-1.0.0-beta9.jar
-                    println "$aarVersion (local maven)"
-                } else {
-                    // remote maven:
-                    // ~/.gradle/caches/modules-2/files-2.1/net.wequick.tools.build/gradle-small/1.0.0-beta9/8db229545a888ab25e210a9e574c0261e6a7a52d/gradle-small-1.0.0-beta9.jar
-                    println "$aarVersion (maven)"
-                }
-            }
+//            print String.format('%24s', 'small aar : ')
+//            if (small.smallProject != null) {
+//                def prop = new Properties()
+//                prop.load(small.smallProject.file('gradle.properties').newDataInputStream())
+//                println "${prop.getProperty('version')} (project)"
+//            } else {
+//                def aarVersion
+//                try {
+//                    aarVersion = small.aarVersion
+//                } catch (Exception e) {
+//                    aarVersion = 'unspecific'
+//                }
+//                def module = small.hostProject.configurations.compile
+//                        .resolvedConfiguration.firstLevelModuleDependencies.find {
+//                    it.moduleGroup == 'net.wequick.small' && it.moduleName == 'small'
+//                }
+//                File pluginDir = module.moduleArtifacts.first().file.parentFile
+//                if (pluginDir.name == module.moduleVersion) {
+//                    // local maven:
+//                    // ~/.m2/repository/net/wequick/tools/build/gradle-small/1.0.0-beta9/gradle-small-1.0.0-beta9.jar
+//                    println "$aarVersion (local maven)"
+//                } else {
+//                    // remote maven:
+//                    // ~/.gradle/caches/modules-2/files-2.1/net.wequick.tools.build/gradle-small/1.0.0-beta9/8db229545a888ab25e210a9e574c0261e6a7a52d/gradle-small-1.0.0-beta9.jar
+//                    println "$aarVersion (maven)"
+//                }
+//            }
 
             // gradle version
             print String.format('%24s', 'gradle core : ')
@@ -299,14 +294,8 @@ class RootPlugin extends BasePlugin {
             def rows = []
             def fileTitle = 'file'
             File out = small.outputBundleDir
-            if (!small.buildToAssets) {
-                out = new File(small.outputBundleDir, 'armeabi')
-                if (!out.exists()) {
-                    out = new File(small.outputBundleDir, 'x86')
-                }
-                if (out.exists()) {
-                    fileTitle += "($out.name)"
-                }
+            if (out.exists()) {
+                fileTitle += "($out.name)"
             }
             rows.add(['type', 'name', 'PP', 'sdk', 'aapt', 'support', fileTitle, 'size'])
             def vs = getVersions(small.hostProject)
@@ -324,14 +313,9 @@ class RootPlugin extends BasePlugin {
                     if (out.exists()) {
                         def manifest = new XmlParser().parse(prj.android.sourceSets.main.manifestFile)
                         def pkg = manifest.@package
-                        if (small.buildToAssets) {
-                            file = new File(out, "${pkg}.apk")
-                            fileName = '*.' + pkg.split('\\.').last() + '.apk'
-                        } else {
-                            fileName = "lib${pkg.replaceAll('\\.', '_')}.so"
-                            file = new File(out, fileName)
-                            fileName = '*_' + file.name.split('_').last()
-                        }
+                        fileName = "${pkg.replaceAll('\\.', '_')}.apk"
+                        file = new File(out, fileName)
+                        fileName = '*_' + file.name.split('_').last()
                     }
                     def pp = AppPlugin.sPackageIds.get(it)
                     pp = (pp == null) ? '' : String.format('0x%02x', pp)
@@ -485,7 +469,6 @@ class RootPlugin extends BasePlugin {
             rename { preApName }
         }
         println "copy *.ap_ from ${apFile} to ${preApDir}/${preApName}"
-
 
         // Copy R.txt
         def preIdsDir = small.preIdsDir
