@@ -15,63 +15,63 @@
  */
 package com.paem.jugg.gradle.small.support
 
-import com.paem.jugg.gradle.small.RootExtension
+import com.paem.jugg.gradle.small.RootExtension.KotlinConfig
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 
 class KotlinCompat {
 
-  private static final String ANDROID_PLUGIN_PACKAGE = 'com.android.build.gradle'
-  private static final String KOTLIN_PLUGIN_GROUP = 'org.jetbrains.kotlin'
-  private static final String KOTLIN_PLUGIN_NAME = 'kotlin-gradle-plugin'
-  private static final String KOTLIN_STDLIB_AAR = 'org.jetbrains.kotlin:kotlin-stdlib-jre7'
+    private static final String ANDROID_PLUGIN_PACKAGE = 'com.android.build.gradle'
+    private static final String KOTLIN_PLUGIN_GROUP = 'org.jetbrains.kotlin'
+    private static final String KOTLIN_PLUGIN_NAME = 'kotlin-gradle-plugin'
+    private static final String KOTLIN_STDLIB_AAR = 'org.jetbrains.kotlin:kotlin-stdlib-jre7'
 
-  public static compat(Project rootProject, RootExtension.KotlinConfig kotlin) {
+    public static compat(Project rootProject, KotlinConfig kotlin) {
 
-    def kotlinVersion = kotlin != null ? kotlin.version : null
-    if (kotlinVersion == null) {
-      // Try to get the version from classpath dependencies
-      Configuration classpath = rootProject.buildscript.configurations['classpath']
-      def kotlinModule = classpath.resolvedConfiguration.firstLevelModuleDependencies.find {
-        it.moduleGroup == KOTLIN_PLUGIN_GROUP && it.moduleName == KOTLIN_PLUGIN_NAME
-      }
-      if (kotlinModule == null) return
+        def kotlinVersion = kotlin != null ? kotlin.version : null
+        if (kotlinVersion == null) {
+            // Try to get the version from classpath dependencies
+            Configuration classpath = rootProject.buildscript.configurations['classpath']
+            def kotlinModule = classpath.resolvedConfiguration.firstLevelModuleDependencies.find {
+                it.moduleGroup == KOTLIN_PLUGIN_GROUP && it.moduleName == KOTLIN_PLUGIN_NAME
+            }
+            if (kotlinModule == null) return
 
-      kotlinVersion = kotlinModule.moduleVersion
-    }
-
-    rootProject.subprojects.each { sub ->
-      sub.ext.addedKotlinPlugin = false
-      sub.plugins.whenPluginAdded { plugin ->
-        if (sub.addedKotlinPlugin) return
-
-        if (plugin.class.package.name == ANDROID_PLUGIN_PACKAGE) {
-          // Add the Kotlin Plugin just after Android Plugin
-          //
-          //   com.android.library     -> [package].LibraryPlugin
-          //   com.android.application -> [package].AppPlugin
-          //
-
-          // Check if contains any *.kt files
-          def hasKt = false
-          sub.android.sourceSets['main'].java.srcDirs.each { File srcDir ->
-            if (!srcDir.exists()) return
-
-            srcDir.eachFileRecurse(groovy.io.FileType.FILES, { File file ->
-              if (!hasKt && file.name.endsWith('.kt')) {
-                hasKt = true
-              }
-            })
-          }
-          if (!hasKt) return
-
-          // Add the Kotlin plugin
-          sub.apply plugin: 'kotlin-android'
-          sub.apply plugin: 'kotlin-android-extensions'
-          sub.dependencies.add 'compile', "$KOTLIN_STDLIB_AAR:$kotlinVersion"
-          sub.addedKotlinPlugin = true
+            kotlinVersion = kotlinModule.moduleVersion
         }
-      }
+
+        rootProject.subprojects.each { sub ->
+            sub.ext.addedKotlinPlugin = false
+            sub.plugins.whenPluginAdded { plugin ->
+                if (sub.addedKotlinPlugin) return
+
+                if (plugin.class.package.name == ANDROID_PLUGIN_PACKAGE) {
+                    // Add the Kotlin Plugin just after Android Plugin
+                    //
+                    //   com.android.library     -> [package].LibraryPlugin
+                    //   com.android.application -> [package].AppPlugin
+                    //
+
+                    // Check if contains any *.kt files
+                    def hasKt = false
+                    sub.android.sourceSets['main'].java.srcDirs.each { File srcDir ->
+                        if (!srcDir.exists()) return
+
+                        srcDir.eachFileRecurse(groovy.io.FileType.FILES, { File file ->
+                            if (!hasKt && file.name.endsWith('.kt')) {
+                                hasKt = true
+                            }
+                        })
+                    }
+                    if (!hasKt) return
+
+                    // Add the Kotlin plugin
+                    sub.apply plugin: 'kotlin-android'
+                    sub.apply plugin: 'kotlin-android-extensions'
+                    sub.dependencies.add 'compile', "$KOTLIN_STDLIB_AAR:$kotlinVersion"
+                    sub.addedKotlinPlugin = true
+                }
+            }
+        }
     }
-  }
 }

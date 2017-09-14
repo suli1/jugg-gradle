@@ -13,27 +13,13 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.paem.jugg.gradle.small
+package com.paem.jugg.gradle.small.aapt
 
-import org.gradle.api.Project
-
-public class BaseExtension {
-
-    public static final String FD_INTERMEDIATES = "intermediates"
-
-    /** Package id of bundle */
-    int packageId = 0x7f
-    String packageIdStr = '7f'
-
-    /** Bundle type */
-    PluginType type
-
-    /** Index of building loop */
-    int buildIndex
-
-    Project project
-
-    public BaseExtension(Project project) {
-        this.project = project
-    }
+/**
+ * enum from include/androidfw/ResourceTypes.h
+ */
+public enum ResTableEntry {
+    public static int FLAG_COMPLEX = 0X0001;
+    public static int FLAG_PUBLIC = 0X0002;
+    public static int FLAG_WEAK = 0X0004;
 }

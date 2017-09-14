@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.paem.jugg.gradle.small.utils
+package com.paem.jugg.gradle.small.util
 
 public final class Log {
 

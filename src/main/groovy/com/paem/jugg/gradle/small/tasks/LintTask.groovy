@@ -13,27 +13,16 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.paem.jugg.gradle.small
+package com.paem.jugg.gradle.small.tasks
 
-import org.gradle.api.Project
+import com.paem.jugg.gradle.small.test.UnitTests
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
 
-public class BaseExtension {
+class LintTask extends DefaultTask {
 
-    public static final String FD_INTERMEDIATES = "intermediates"
-
-    /** Package id of bundle */
-    int packageId = 0x7f
-    String packageIdStr = '7f'
-
-    /** Bundle type */
-    PluginType type
-
-    /** Index of building loop */
-    int buildIndex
-
-    Project project
-
-    public BaseExtension(Project project) {
-        this.project = project
+    @TaskAction
+    def run() {
+        UnitTests.runAllTests(project)
     }
 }

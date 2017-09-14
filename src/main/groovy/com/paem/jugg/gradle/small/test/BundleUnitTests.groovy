@@ -13,27 +13,28 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.paem.jugg.gradle.small
+package com.paem.jugg.gradle.small.test
 
+import com.paem.jugg.gradle.small.RootExtension
 import org.gradle.api.Project
 
-public class BaseExtension {
+class BundleUnitTests extends UnitTests {
 
-    public static final String FD_INTERMEDIATES = "intermediates"
-
-    /** Package id of bundle */
-    int packageId = 0x7f
-    String packageIdStr = '7f'
-
-    /** Bundle type */
-    PluginType type
-
-    /** Index of building loop */
-    int buildIndex
-
-    Project project
-
-    public BaseExtension(Project project) {
-        this.project = project
+    BundleUnitTests(Project project) {
+        super(project)
     }
+
+    String bundleId() {
+        throw new RuntimeException("Unimplemented bundleId!")
+    }
+
+    File getBundle() {
+        return getBundle(bundleId())
+    }
+
+    File getBundle(String bundleId) {
+        RootExtension rootExt = project.rootProject.small
+        return rootExt.getBundleOutput(bundleId)
+    }
+
 }

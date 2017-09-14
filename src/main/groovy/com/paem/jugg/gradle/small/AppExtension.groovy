@@ -63,18 +63,18 @@ public class AppExtension extends BundleExtension {
     /** File of split R.java */
     File splitRJavaFile
 
-//    LinkedHashMap<Integer, Integer> idMaps
-//    LinkedHashMap<String, String> idStrMaps
-//    ArrayList retainedTypes
-//    ArrayList retainedStyleables
-//    Map<String, List> vendorTypes
-//    Map<String, List> vendorStyleables
-//
-//    /** List of all resource types */
-//    ArrayList allTypes
-//
-//    /** List of all resource styleables */
-//    ArrayList allStyleables
+    LinkedHashMap<Integer, Integer> idMaps
+    LinkedHashMap<String, String> idStrMaps
+    ArrayList retainedTypes
+    ArrayList retainedStyleables
+    Map<String, List> vendorTypes
+    Map<String, List> vendorStyleables
+
+    /** List of all resource types */
+    ArrayList allTypes
+
+    /** List of all resource styleables */
+    ArrayList allStyleables
 
     AppExtension(Project project) {
         super(project)

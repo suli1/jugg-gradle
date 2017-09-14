@@ -5,8 +5,8 @@ import com.android.build.gradle.internal.pipeline.TransformTask
 import com.android.build.gradle.internal.tasks.PrepareLibraryTask
 import com.android.build.gradle.internal.transforms.ProGuardTransform
 import com.android.build.gradle.tasks.MergeManifests
-import com.paem.jugg.gradle.small.utils.AarPath
-import com.paem.jugg.gradle.small.utils.TaskUtils
+import com.paem.jugg.gradle.small.util.AarPath
+import com.paem.jugg.gradle.small.util.TaskUtils
 import org.gradle.api.Project
 
 class AndroidPlugin extends BasePlugin {
@@ -80,7 +80,7 @@ class AndroidPlugin extends BasePlugin {
 
     protected void afterEvaluate(boolean released) {
         println ">> AndroidPlugin.afterEvaluate, release:${released}"
-        // Automatic add `small' dependency
+//        // Automatic add `small' dependency
 //        if (rootSmall.smallProject != null) {
 //            project.dependencies.add(smallCompileType, rootSmall.smallProject)
 //        } else {
@@ -100,13 +100,6 @@ class AndroidPlugin extends BasePlugin {
         preBuild.doLast {
             if (!released) {
                 removeUnimplementedProviders()
-            }
-          // print project compiles
-            project.configurations.compile.each { dep ->
-                println ">>> ${project.name} [compile '${dep.name}'])"
-            }
-            project.configurations.provided.each { dep ->
-                println ">>> ${project.name} [provided '${dep.name}'])"
             }
         }
     }
@@ -203,11 +196,11 @@ class AndroidPlugin extends BasePlugin {
         pt.keep('class android.support.** { *; }')
         pt.keep('interface android.support.** { *; }')
 
-//        // Keep Small library
-//        pt.dontwarn('net.wequick.small.**')
-//        pt.keep('class net.wequick.small.Small { public *; }')
-//        pt.keep('class net.wequick.small.Bundle { public *; }')
-//        pt.keep('interface net.wequick.small.** { *; }')
+        // Keep Small library
+        pt.dontwarn('net.wequick.small.**')
+        pt.keep('class net.wequick.small.Small { public *; }')
+        pt.keep('class net.wequick.small.Bundle { public *; }')
+        pt.keep('interface net.wequick.small.** { *; }')
 
         // Keep classes and interfaces with @Keep annotation
         pt.keep('class android.support.annotation.**')
