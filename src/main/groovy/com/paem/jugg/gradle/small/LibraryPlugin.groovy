@@ -14,7 +14,6 @@ class LibraryPlugin extends AppPlugin {
     private File mBakBuildFile
 
     void apply(Project project) {
-        println 'Welcome to LibraryPlugin'
         super.apply(project)
         mBakBuildFile = new File(project.buildFile.parentFile, "${project.buildFile.name}~")
     }

@@ -7,7 +7,6 @@ import org.gradle.api.Project
 class HostPlugin extends AndroidPlugin {
 
     void apply(Project project) {
-        println "Welcome to HostPlugin!"
         super.apply(project)
     }
 
@@ -27,7 +26,6 @@ class HostPlugin extends AndroidPlugin {
             // If contains release signing config, all bundles will be signed with it,
             // copy the config to debug type to ensure the signature-validating works
             // while launching application from IDE.
-            // TODO 安全考虑，插件签名与宿主签名应该分开
             def releaseSigningConfig = android.buildTypes.release.signingConfig
             if (releaseSigningConfig != null) {
                 android.buildTypes.debug.signingConfig = releaseSigningConfig
@@ -68,7 +66,7 @@ class HostPlugin extends AndroidPlugin {
             small.jar = project.jarReleaseClasses
             small.aapt = project.processReleaseResources
         }
-        project.buildLib.dependsOn small.jar
-        println "buildLib dependsOn small.jar"
+//        project.buildLib.dependsOn small.jar
+//        println "buildLib dependsOn small.jar"
     }
 }

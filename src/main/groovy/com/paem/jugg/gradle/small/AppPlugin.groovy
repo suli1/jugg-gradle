@@ -162,9 +162,6 @@ class AppPlugin extends BundlePlugin {
         // Collect stub and small jars in host
         Set<Project> sharedProjects = []
         sharedProjects.addAll(rootSmall.hostStubProjects)
-//        if (rootSmall.smallProject != null) {
-//            sharedProjects.add(rootSmall.smallProject)
-//        }
         sharedProjects.each {
             def jarTask = it.tasks.withType(TransformTask.class).find {
                 it.variantName == 'release' && it.transform.name == 'syncLibJars'
@@ -385,61 +382,61 @@ class AppPlugin extends BundlePlugin {
     protected void configureProguard(BaseVariant variant, TransformTask proguard, ProGuardTransform pt) {
         super.configureProguard(variant, proguard, pt)
 
-        // Keep R.*
-        // FIXME: the `configuration' field is protected, may be depreciated
-        pt.configuration.keepAttributes = ['InnerClasses']
-        pt.keep("class ${variant.applicationId}.R")
-        pt.keep("class ${variant.applicationId}.R\$* { <fields>; }")
-
-        // Add reference libraries
-        proguard.doFirst {
-            getLibraryJars().findAll{ it.exists() }.each {
-                // FIXME: the `libraryJar' method is protected, may be depreciated
-                pt.libraryJar(it)
-            }
-        }
-        // Split R.class
-        proguard.doLast {
-            if (small.splitRJavaFile == null || !small.splitRJavaFile.exists()) {
-                return
-            }
-
-            def minifyJar = IntermediateFolderUtils.getContentLocation(
-                    proguard.streamOutputFolder, 'main', pt.outputTypes, pt.scopes, Format.JAR)
-            if (!minifyJar.exists()) return
-
-            mMinifyJar = minifyJar // record for `LibraryPlugin'
-
-            Log.success("[$project.name] Strip aar classes...")
-
-            // Unpack the minify jar to split the R.class
-            File unzipDir = new File(minifyJar.parentFile, 'main')
-            project.copy {
-                from project.zipTree(minifyJar)
-                into unzipDir
-            }
-
-            def javac = small.javac
-            File pkgDir = new File(unzipDir, small.packagePath)
-
-            // Delete the original generated R$xx.class
-            pkgDir.listFiles().each { f ->
-                if (f.name.startsWith('R$')) {
-                    f.delete()
-                }
-            }
-
-            // Re-compile the split R.java to R.class
-            project.ant.javac(srcdir: small.splitRJavaFile.parentFile,
-                    source: javac.sourceCompatibility,
-                    target: javac.targetCompatibility,
-                    destdir: unzipDir)
-
-            // Repack the minify jar
-            project.ant.zip(baseDir: unzipDir, destFile: minifyJar)
-
-            Log.success "[${project.name}] split R.class..."
-        }
+//        // Keep R.*
+//        // FIXME: the `configuration' field is protected, may be depreciated
+//        pt.configuration.keepAttributes = ['InnerClasses']
+//        pt.keep("class ${variant.applicationId}.R")
+//        pt.keep("class ${variant.applicationId}.R\$* { <fields>; }")
+//
+//        // Add reference libraries
+//        proguard.doFirst {
+//            getLibraryJars().findAll{ it.exists() }.each {
+//                // FIXME: the `libraryJar' method is protected, may be depreciated
+//                pt.libraryJar(it)
+//            }
+//        }
+//        // Split R.class
+//        proguard.doLast {
+//            if (small.splitRJavaFile == null || !small.splitRJavaFile.exists()) {
+//                return
+//            }
+//
+//            def minifyJar = IntermediateFolderUtils.getContentLocation(
+//                    proguard.streamOutputFolder, 'main', pt.outputTypes, pt.scopes, Format.JAR)
+//            if (!minifyJar.exists()) return
+//
+//            mMinifyJar = minifyJar // record for `LibraryPlugin'
+//
+//            Log.success("[$project.name] Strip aar classes...")
+//
+//            // Unpack the minify jar to split the R.class
+//            File unzipDir = new File(minifyJar.parentFile, 'main')
+//            project.copy {
+//                from project.zipTree(minifyJar)
+//                into unzipDir
+//            }
+//
+//            def javac = small.javac
+//            File pkgDir = new File(unzipDir, small.packagePath)
+//
+//            // Delete the original generated R$xx.class
+//            pkgDir.listFiles().each { f ->
+//                if (f.name.startsWith('R$')) {
+//                    f.delete()
+//                }
+//            }
+//
+//            // Re-compile the split R.java to R.class
+//            project.ant.javac(srcdir: small.splitRJavaFile.parentFile,
+//                    source: javac.sourceCompatibility,
+//                    target: javac.targetCompatibility,
+//                    destdir: unzipDir)
+//
+//            // Repack the minify jar
+//            project.ant.zip(baseDir: unzipDir, destFile: minifyJar)
+//
+//            Log.success "[${project.name}] split R.class..."
+//        }
     }
 
     /** Collect the vendor aars (has resources) compiling in current bundle */
@@ -998,9 +995,9 @@ class AppPlugin extends BundlePlugin {
     }
 
     protected void hookVariantTask(BaseVariant variant) {
-        hookMergeAssets(variant.mergeAssets)
+//        hookMergeAssets(variant.mergeAssets)
 
-        hookProcessManifest(small.processManifest)
+//        hookProcessManifest(small.processManifest)
 
         hookAapt(small.aapt)
 

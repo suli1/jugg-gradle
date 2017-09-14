@@ -42,7 +42,6 @@ abstract class BundlePlugin extends AndroidPlugin {
     @Override
     protected void afterEvaluate(boolean released) {
         super.afterEvaluate(released)
-        println ">> BundlePlugin.afterEvaluate"
         if (!released) return
 
         BuildType buildType = android.buildTypes.find { it.name == 'release' }
@@ -66,7 +65,6 @@ abstract class BundlePlugin extends AndroidPlugin {
     @Override
     protected void configureReleaseVariant(BaseVariant variant) {
         super.configureReleaseVariant(variant)
-
         // Set output plugin file (*.apk)
         def outputFile = getOutputFile(variant)
         BundleExtension ext = small
@@ -83,11 +81,6 @@ abstract class BundlePlugin extends AndroidPlugin {
         project.task('cleanBundle', type: CleanBundleTask)
         project.task('buildBundle', dependsOn: 'assembleRelease')
     }
-
-//    @Override
-//    protected String getSmallCompileType() {
-//        return 'debugCompile'
-//    }
 
     protected def getOutputFile(variant) {
         def appId = variant.applicationId

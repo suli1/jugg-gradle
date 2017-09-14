@@ -20,7 +20,6 @@ class RootPlugin extends BasePlugin {
     private Map<String, Set<String>> bundleModules = [:]
 
     void apply(Project project) {
-        println "Welcome to RootPlugin!"
         super.apply(project)
     }
 
@@ -402,6 +401,11 @@ class RootPlugin extends BasePlugin {
     }
 
     void buildLib(Project lib) {
+        if (lib.name == small.hostModuleName) {
+            println ">> [buildLib] Project ${lib.name} do nothing"
+            return
+        }
+
         def libName = lib.name
         def ext = (AndroidExtension) lib.small
 

@@ -187,11 +187,11 @@ class AndroidPlugin extends BasePlugin {
         pt.keep('class android.support.** { *; }')
         pt.keep('interface android.support.** { *; }')
 
-        // Keep Small library
-        pt.dontwarn('net.wequick.small.**')
-        pt.keep('class net.wequick.small.Small { public *; }')
-        pt.keep('class net.wequick.small.Bundle { public *; }')
-        pt.keep('interface net.wequick.small.** { *; }')
+//        // Keep Small library
+//        pt.dontwarn('net.wequick.small.**')
+//        pt.keep('class net.wequick.small.Small { public *; }')
+//        pt.keep('class net.wequick.small.Bundle { public *; }')
+//        pt.keep('interface net.wequick.small.** { *; }')
 
         // Keep classes and interfaces with @Keep annotation
         pt.keep('class android.support.annotation.**')
