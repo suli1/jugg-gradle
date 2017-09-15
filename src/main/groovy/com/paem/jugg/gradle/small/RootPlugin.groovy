@@ -401,6 +401,7 @@ class RootPlugin extends BasePlugin {
     }
 
     void buildLib(Project lib) {
+        println ">>> [buildLib] Project ${lib.name}"
         if (lib.name == small.hostModuleName) {
             println ">> [buildLib] Project ${lib.name} do nothing"
             return
@@ -408,6 +409,7 @@ class RootPlugin extends BasePlugin {
 
         def libName = lib.name
         def ext = (AndroidExtension) lib.small
+        println ">>> ext.jar:${ext.jar.name}"
 
         // Copy jars  build-small/intermediates/small-pre-jar/base/
         def preJarDir = small.preBaseJarDir
@@ -422,6 +424,8 @@ class RootPlugin extends BasePlugin {
             }
             println "copy jar from ${rJar} to ${preJarDir}/${libName}-r.jar"
         }
+
+
         //  - copy dependencies jars
         ext.buildCaches.each { k, v ->
             // explodedDir: [key:value]

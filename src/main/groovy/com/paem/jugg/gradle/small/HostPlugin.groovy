@@ -62,9 +62,11 @@ class HostPlugin extends AndroidPlugin {
             flavor = flavor.capitalize()
             small.jar = project.tasks["jar${flavor}ReleaseClasses"]
             small.aapt = project.tasks["process${flavor}ReleaseResources"]
+            println ">>> task jar1 :${small.jar}"
         } else {
             small.jar = project.jarReleaseClasses
             small.aapt = project.processReleaseResources
+            println ">>> task jar2 :${small.jar}"
         }
 //        project.buildLib.dependsOn small.jar
 //        println "buildLib dependsOn small.jar"

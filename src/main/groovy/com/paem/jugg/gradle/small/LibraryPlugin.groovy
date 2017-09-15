@@ -14,6 +14,7 @@ class LibraryPlugin extends AppPlugin {
     private File mBakBuildFile
 
     void apply(Project project) {
+        println 'Welcome to LibraryPlugin!'
         super.apply(project)
         mBakBuildFile = new File(project.buildFile.parentFile, "${project.buildFile.name}~")
     }
@@ -67,6 +68,7 @@ class LibraryPlugin extends AppPlugin {
             // `hookJavacTask' will not be triggered. Provided the necessary jars here.
             getLibraryJars().each {
                 project.dependencies.add('provided', project.files(it))
+                println ">>> add provided ${it.name} in project ${project.name}"
             }
 
             // Resolve the transform tasks
@@ -127,6 +129,7 @@ class LibraryPlugin extends AppPlugin {
         super.configureReleaseVariant(variant)
 
         small.jar = project.jarReleaseClasses
+        println ">>> jar task:${small.jar.name}"
 
         variant.assemble.doLast {
             // Generate jar file to root pre-jar directory
